@@ -60,7 +60,12 @@ class ContactService {
         { returnDocument: "after" }
     );
     
-    return result.value; // return result;
+    if (!result || (result.lastErrorObject && result.lastErrorObject.updatedExisting === false)) {
+    return null;
+  }
+
+  // Document sau cập nhật: ưu tiên result.value, fallback true để tránh 404 giả
+  return result.value ?? true;
     }
 
 }
