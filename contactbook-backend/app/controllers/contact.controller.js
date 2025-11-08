@@ -97,8 +97,19 @@ exports.delete = async (req, res, next) => {
     }
 };
 
-exports.deleteAll = (req, res) => {
-  res.send({ message: "deleteAll handler" });
+// Delete all contacts of a user from the database
+exports.deleteAll = async (_req, res, next) => {
+    try {
+        const contactService = new ContactService(MongoDB.client);
+        const deletedCount = await contactService.deleteAll();
+        return res.send({
+            message: `${deletedCount} contacts were deleted successfully`,
+        });
+    } catch (error) {
+        return next(
+            new ApiError(500, "An error occurred while removing all contacts")
+        );
+    }
 };
 
 // Find all favorite contacts of a user
