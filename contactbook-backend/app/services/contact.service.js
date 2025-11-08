@@ -67,6 +67,13 @@ class ContactService {
   // Document sau cập nhật: ưu tiên result.value, fallback true để tránh 404 giả
   return result.value ?? true;
     }
+    // ...
+async delete(id) {
+    const result = await this.Contact.findOneAndDelete({
+        _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
+    });
+    return result;
+}
 
 }
 
