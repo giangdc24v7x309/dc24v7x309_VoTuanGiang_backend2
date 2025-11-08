@@ -78,15 +78,41 @@ exports.update = async (req, res, next) => {
     }
 };
 
-exports.delete = (req, res) => {
-  res.send({ message: "delete handler" });
+// Delete a contact with the specified id in the request
+exports.delete = async (req, res, next) => {
+    try {
+        const contactService = new ContactService(MongoDB.client);
+        const document = await contactService.delete(req.params.id);
+        if (!document) {
+            return next(new ApiError(404, "Contact not found"));
+        }
+        return res.send({ message: "Contact was deleted successfully" });
+    } catch (error) {
+        return next(
+            new ApiError(
+                500,
+                `Could not delete contact with id=${req.params.id}`
+            )
+        );
+    }
 };
 
 exports.deleteAll = (req, res) => {
   res.send({ message: "deleteAll handler" });
 };
 
-exports.findAllFavorite = (req, res) => {
-  res.send({ message: "findAllFavorite handler" });
+// Find all favorite contacts of a user
+exports.findAllFavorite = async (_req, res, next) => {
+    try {
+        const contactService = new ContactService(MongoDB.client);
+        const documents = await contactService.findFavorite();
+        return res.send(documents);
+    } catch (error) {
+        return next(
+            new ApiError(
+                500,
+                "An error occurred while retrieving favorite contacts"
+            )
+        );
+    }
 };
-// Create and Save a new Contact
